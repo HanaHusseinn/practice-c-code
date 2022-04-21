@@ -89,6 +89,39 @@ No pairs found
 
 ### SOLUTION 2: USING HASHING
 
+🔴🔴🔴🔴🔴🔴🔴🔴🔴 **Useful tutorial on Unordered Maps** 🔴🔴🔴🔴🔴🔴🔴🔴🔴
+#include <iostream> //for cin,cout,endl
+#include <unordered_map> //for unordered_map,pair
+#include <algorithm> //for for_each
+#include <string> //for string
+
+int main()
+{
+    std::unordered_map<std::string, int> WordMap ({{"First",1},{"Second",2},{"Third",3}});
+    
+    for (std::pair<std::string,int> element: WordMap)
+    {
+        std::cout<<element.first<< " :: " <<element.second << std::endl;
+    }
+    
+    std::cout<<"************"<<std::endl;
+    
+    std::unordered_map<std::string,int>:: iterator it = WordMap.begin();
+    while (it!=WordMap.end())
+    {
+        std::cout<<it->first<<" :: "<<it->second<<std::endl;
+        it++;
+    }
+    
+    std::for_each(WordMap.begin(),WordMap.end(),[](std::pair<std::string,int>element)
+    {
+        std::cout<<element.first<<" :: "<<element.second<<std::endl;
+    });
+    
+    
+    return 0;
+}
+🔴🔴🔴🔴🔴🔴🔴🔴🔴
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
