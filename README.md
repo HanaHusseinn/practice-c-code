@@ -86,6 +86,7 @@ No pairs found
 |------|-------|
 |No extra space needed to the size of input array| O(n.log(n))|
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### SOLUTION 2: USING HASHING
 
@@ -124,6 +125,73 @@ int main()
 }
 ```
 🔴🔴🔴🔴🔴🔴🔴🔴🔴
+
+
+🟧 **Libraries**
+
+```
+#include <iostream>
+#include <unordered_map>
+```
+🟧 **Function: findPairs (The function that will be called in main)**
+```
+void findPairs(int arr [],int size, int target)
+{
+    std::unordered_map<int,int> WordMap;
+    bool pairFound = false;
+    //in the map, i will put the no. in nums arr ad its sum complement
+    for (int i =0 ; i < size; i++)
+    {
+        if (WordMap.find(target-arr[i])!=WordMap.end()) //not seen before
+        {
+            std::cout<<"pair is: ("<<target-arr[i]<<","<<arr[i]<<")"<<std::endl;
+            //fo rtarget=10, even if 5 is the number iteration, still will find it once and then no other 5 is found in the rest of the numbers, so wont get a pair to it
+            WordMap.erase(target-arr[i]); //useful for when th map is large and large numbers are stored for sum of 10000 for ex.
+            //so delete one by one at its time to reduce the steps and itertions in find and remove the already found vals
+            pairFound= true; //if i will erase, 
+            //how to do it once?
+        }
+            
+        else
+            WordMap[arr[i]]=i; //this i is any value, just to use the map for faster search among vals
+    }
+    
+    //if (WordMap.begin()==WordMap.end()) //will work if i dont do the erase line
+    if (pairFound==false)
+        std::cout<<"no pairs found";
+    
+}
+```
+🟧 **Function: main**
+```
+int main()
+{
+    int nums []= {9,2,5,0,33,1,6,7,3,4,8,20,10}; //{5,1,7}
+    int n = sizeof(nums)/sizeof(nums[0]);
+    int target = 10;
+    findPairs(nums,n,target);
+    return 0;
+}
+```
+🟥**Output:** 
+
+🟩 Case 1 : nums= {9,2,5,0,33,1,6,7,3,4,8,20,10}
+
+```
+pair is: (9,1)
+pair is: (7,3)
+pair is: (6,4)
+pair is: (2,8)
+pair is: (0,10)
+```
+🟩 Case 2 : nums={5,1,7}
+
+```
+no pairs found
+```
+|Advantages (Complexity)| Disadvantages (Complexity)|
+|------|-------|
+|O(n) | requires O(n) extra space, where n is the size of the input|
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
