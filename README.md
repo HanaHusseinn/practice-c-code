@@ -88,7 +88,7 @@ No pairs found
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-### SOLUTION 2: USING HASHING
+### SOLUTION 2: USING MAP HASHING
 
 🔴🔴🔴🔴🔴🔴🔴🔴🔴 **Useful tutorial on Unordered Maps** 🔴🔴🔴🔴🔴🔴🔴🔴🔴
 ```
@@ -214,5 +214,188 @@ no pairs found
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-##  2️⃣ Find a pair with the given sum in an array
+##  2️⃣ Print all subarrays with 0 sum
 
+💎**Idea**
+
+first i think about using maps for faster find
+
+i will write the sum of values starting from 'each index' till the last element in array
+
+if the sum is 0, at any point, this means that from THAT index, till this point: subarray sum=0
+
+so ex:
+
+{4,2,-3,-1,0,4}  -> 5 indices
+|index|value|
+|------|----|
+|0|4|
+|1|2|
+|2|-3|
+|3|-1|
+|4|0|
+|5|4|
+
+|start index/all the indices|0|1|2|3|4|5|
+|------|-------|--|--|--|--|--|
+|0|(0,4)||||||
+|1|(1,6)|(1,2)||||
+|2|(2,3)|(2,-1)|(2,-3)||||
+|3|(3,2)|(3,-2)|(3,-4)|(3,-1)|||
+|4|(4,2)|(4,-2)|(4,-4)|(4,-1)|[![](https://img.shields.io/badge/(4,0)-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant)||
+|5|(4,6)|(5,2)|[![](https://img.shields.io/badge/(5,0)-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant)|(5,-3)|(5,4)|(5,4)|
+
+so according to the idea: 
+
+starting from index 2 till index 5 -> sum = 0 , which means the elements is no. at index [2,5] where their sum = 0 ---> subarr={-3,-1,0,4}
+
+starting from index 4 till index 4 -> sum = 0 , which means the only element is no. at index no.4 whose val = 0 ---> subarr={0}
+
+But take care that means for each idex i will have to calc sum starting from it till all the next elemetns till the end
+
+this is a redundant problem bec i already cal sum of all eelemts form the 1st index, 
+
+so if i want starting from the second element index, i will only subtract the first element value from all the next values
+
+which will mean im starting from the second value, and thenn again find the index at which sum = 0, 
+
+it will mean sb array startig from 2nd element till this index, sum=0
+
+BUT again, this is not good to keep looping for each element and subtracting the previous values from them
+
+as if we look close to the values in the table we will find that the subarrays that have sum = 0,
+
+they are eq to having the sum at the index is repeated at a later index which means all the elemnts in betwee, their sum =0
+
+it is equivalent to if we start at an index till we get zero
+
+
+|start index/all the indices|0|1|[![](https://img.shields.io/badge/2-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant)|3|4|5|
+|------|-------|--|--|--|--|--|
+|0|(0,4)||||||
+|1|(1,[![](https://img.shields.io/badge/6-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant))|(1,2)||||
+|[![](https://img.shields.io/badge/2-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant)|(2,3)|(2,-1)|(2,-3)||||
+|[![](https://img.shields.io/badge/3-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant)|(3,2)|(3,-2)|(3,-4)|(3,-1)|||
+|[![](https://img.shields.io/badge/4-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant)|(4,2)|(4,-2)|(4,-4)|(4,-1)|(4,0)||
+|[![](https://img.shields.io/badge/5-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant)|(4,[![](https://img.shields.io/badge/6-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant))|(5,2)|[![](https://img.shields.io/badge/(5,0)-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant)|(5,-3)|(5,4)|(5,4)|
+
+6,6 is repeated back so if we start at index after it which is 2 till 5, sum of all these elements =0
+
+|start index/all the indices|0|1|2|3|[![](https://img.shields.io/badge/4-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant)|5|
+|------|-------|--|--|--|--|--|
+|0|(0,4)||||||
+|1|(1,6)|(1,2)||||
+|2|(2,3)|(2,-1)|(2,-3)||||
+|3|(3,[![](https://img.shields.io/badge/2-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant))|(3,-2)|(3,-4)|(3,-1)|||
+|[![](https://img.shields.io/badge/4-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant)|(4,[![](https://img.shields.io/badge/2-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant))|(4,-2)|(4,-4)|(4,-1)|[![](https://img.shields.io/badge/(4,0)-blue?style=for-the-badge)](https://github.com/hamzamohdzubair/redant)||
+|5|(4,6)|(5,2)|(5,0)|(5,-3)|(5,4)|(5,4)|
+
+2,2 is repeated back so if we start at index after it which is 4 till 4, sum of all these elements =0
+
+We can notice from the prvious tables that
+
+usig the turnaround of that if we find a sum is repeated, then starting from that index till the current one, all the leemnt in betwee, sum=0
+
+(which we used insted of subr=tracting vlaues everytime to ocheck each index)
+
+so **find the sum repeated back-> subarray = the region in between (start,end]**, we **take the start as the next index(add +1)** to the 'found' index which has the same sum
+
+as we see, we check the element previous the the atual start index to check the sum value
+
+so we need an index before the actual start index of the subarray range
+
+NOTE: if the sum starts at 1st element,  we need to check sum at its previous position (-1) to know if really sum previous to it is 0
+
+(0 bec starting at 1st pos =3 for ex -> sum=3 till that index , 2nd pos = -2 -> sum = 0 (till taht pos) bec we start at the index so we get th 0, which we wanted to get startnig fromt he other indices but we did it withha turnaround)
+
+so we have to **insert sum = 0 at pos -1** to be checked
+
+### SOLUTION : USING MULTIMAP HASHING
+🟧 **Libraries**
+```
+#include <iostream>
+#include <unordered_map>
+```
+🟧 **Function: findSubarrayZeroSum (The function that will be called in main)**
+```
+void findSubarrayZeroSum(int arr [], int size)
+{
+    std::unordered_multimap<int, int> subarrayMap;
+    //since sum can be found at many locations, and still it is the key, so we use multimap that allows same key(sum) to be repeated at many locations
+    //unlike unordered_map where the key can't be repeated
+    
+    subarrayMap.insert(std::pair<int,int> (0,-1));
+    
+    int sum =0;
+    bool subarrayFound=false;
+    
+    for (int i =0 ; i<size ; i++)
+    {//key is sum, its at first pos
+        sum += arr[i];
+    
+        if (subarrayMap.find(sum)!=subarrayMap.end()) //found first previous loc with same sum, so all in bet sum=0
+        //since we want to find the locations with certain sum, then sum is the key,then it is the first part of the pair
+        {
+            subarrayFound=true;
+            std::unordered_multimap<int,int>::iterator it = subarrayMap.find(sum);
+            
+            //find all next locations that have the sum
+            while (it!=subarrayMap.end() && it->first==sum)
+            {
+                int fist_arr_index=it->second +1;
+                
+                std::cout<<"Subarray = { ";
+                for (int element = fist_arr_index;element<i;element++)
+                {
+                    std::cout<<arr[element]<< " , ";
+                }
+                std::cout<<arr[i]<<" }"<<std::endl;;
+
+                it++;
+            }
+            //for (int element: arr)    
+        }
+        subarrayMap.insert(std::pair<int,int> (sum,i));
+    }
+    if (subarrayFound==false)
+        std::cout<<"No subarrays of 0 sum are found";    
+}
+```
+🟧 **Function: main**
+```
+int main()
+{
+    int nums [] = {4,2,-3,-1,0,4};
+    int n= sizeof(nums)/sizeof(nums[0]);
+    findSubarrayZeroSum(nums,n);
+    return 0;
+}
+```
+🟥**Output:** 
+
+🟩 Case 1 : nums= { 4, 2, -3, -1, 0, 4 }
+
+```
+Subarray = { 0 }
+Subarray = { -3 , -1 , 0 , 4 }
+```
+🟩 Case 2 : nums= { 3, 4, -7, 3, 1, 3, 1, -4, -2, -2 }
+
+```
+Subarray = { 3 , 4 , -7 }
+Subarray = { 4 , -7 , 3 }
+Subarray = { -7 , 3 , 1 , 3 }
+Subarray = { 3 , 1 , -4 }
+Subarray = { 3 , 1 , 3 , 1 , -4 , -2 , -2 }
+Subarray = { 3 , 4 , -7 , 3 , 1 , 3 , 1 , -4 , -2 , -2 }
+```
+🟩 Case 3 : nums= { 3, 4, 7,-1,6 }
+
+```
+No subarrays of 0 sum are found
+```
+Advantage: not looping from each index till end of array, redundant info stored in the summation of the only first index till the last element
+and hust checking the repeated sum to indicate range in between is zero, and start index is the stored index so loop on all of them after 'find' the first one, and the last index is the current index location in the loop
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
