@@ -126,6 +126,22 @@ int main()
 ```
 🔴🔴🔴🔴🔴🔴🔴🔴🔴
 
+💎**Idea** 
+
+to check previous elements in array from a given location, use hash which is much faster than iterating
+
+unordered map uses find function which is faster than iterating all previous
+
+so for each element, if i dont find its pair in previous elements, add it to the map
+
+hoping that i find its pair in the future in the rest of the upcoming elements,
+
+so when i check back the previous elements, I find the pair that I preiously stored(when I didn't find its pair)
+
+then remove the pair from the map to reduce the next finding size in the map for the found pair
+
+as it won't repeat the pairs(each number is written once in the array)
+
 
 🟧 **Libraries**
 
@@ -142,7 +158,8 @@ void findPairs(int arr [],int size, int target)
     //in the map, i will put the no. in nums arr ad its sum complement
     for (int i =0 ; i < size; i++)
     {
-        if (WordMap.find(target-arr[i])!=WordMap.end()) //not seen before
+        if (WordMap.find(target-arr[i])!=WordMap.end()) //if its sum complement to target is seen before
+        //then print it and its pair(sum complement to target) that was previously stored
         {
             std::cout<<"pair is: ("<<target-arr[i]<<","<<arr[i]<<")"<<std::endl;
             //fo rtarget=10, even if 5 is the number iteration, still will find it once and then no other 5 is found in the rest of the numbers, so wont get a pair to it
@@ -153,6 +170,7 @@ void findPairs(int arr [],int size, int target)
         }
             
         else
+        //add the current element(which will act as sum complement to target to one of the next elements, if found)
             WordMap[arr[i]]=i; //this i is any value, just to use the map for faster search among vals
     }
     
