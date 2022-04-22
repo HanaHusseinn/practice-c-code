@@ -399,3 +399,220 @@ and hust checking the repeated sum to indicate range in between is zero, and sta
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Sort binary array in linear time
+
+### SOLUTION 1: USING COUNT (not O(n)) - My solution
+
+🟧 **Libraries**
+```
+#include <iostream>
+```
+🟧 **Function: sortBinary (The function that will be called in main)**
+```
+int* sortBinary(int arr [],int size)
+{
+    int countZero =0, countOne=0;
+    
+    for (int i = 0 ; i<size; i++)
+    {
+        if (arr[i]==0)
+            countZero++;
+        else
+            countOne++;
+    }
+    
+    for (int i =0 ; i<countZero; i++)
+        arr[i]=0;
+    
+    for (int i =countZero ; i<(size) ; i++) //size is same as countZero+countOne
+    //so actually i dont need to count ones, just zeros and fill the rest from after 0 till the size with 1
+        arr[i]=1;
+    
+    return arr;
+}
+```
+🟧 **Function: print (The function that will be called in main)**
+```
+void print(int arr [], int size)
+{
+    std::cout<<"Sorted Array = { ";
+    
+    for (int i =0;i<size-1;i++)
+        std::cout<<arr[i]<<" , ";
+        
+    if (size!=0)
+        std::cout<<arr[size-1];
+    
+    std::cout<<" }"<<std::endl;
+}
+
+```
+🟧 **Function: main**
+```
+int main()
+{
+    int nums [] = {1,1,1,1,1,0};
+    int n=sizeof(nums)/sizeof(nums[0]);
+    int * arr = sortBinary(nums,n);
+    
+    print(arr, n);
+    return 0;
+}
+```
+🟥**Output:** 
+
+🟩 Case 1 : nums= { 1, 0, 1, 0, 1, 0, 0, 1 }
+
+```
+Sorted Array = { 0 , 0 , 0 , 0 , 1 , 1 , 1 }
+```
+🟩 Case 2 : nums= {}
+
+```
+Sorted Binary = {  }
+```
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+### SOLUTION 2: INSTANTLY FILL THE 0 IN ITS POSITION TO OVERWRITE 1 NOT COUNT FIRST THEN FILL
+🟧 **Libraries**
+```
+#include <iostream>
+```
+🟧 **Function: sortBinary (The function that will be called in main)**
+```
+int* sortBinary(int arr [], int size)
+{
+    int nextZeroPos=0;
+    for(int i =0;i<size;i++)
+    {
+        if(arr[i]==0) //instatnly fill the zero in its position to overwrite 1, not swap, so we still do another for loop for the ones
+        //also this checks all the n elements, then do another for loop for the ones
+            arr[nextZeroPos++]=0; // arr[nextZeroPos]=0; nextZeroPos++
+    }
+    
+    for (int i= nextZeroPos; i<size; i++)
+        arr[i]=1;
+    
+    return arr;
+}
+```
+🟧 **Function: print (The function that will be called in main)**
+```
+void print(int arr [], int size)
+{
+    std::cout<<"Sorted Binary = { ";
+    for (int i=0; i<size-1; i++)
+        std::cout<<arr[i]<<", ";
+    std::cout<<arr[size-1]<<" }"<<std::endl;
+}
+```
+🟧 **Function: main**
+```
+int main ()
+{
+    int nums[] = {1,0,1,0,1,0,1,1,0,1,0,0};
+    int n= sizeof(nums)/sizeof(nums[0]);
+    
+    int* sortedArr= sortBinary(nums,n);
+    print(sortedArr,n);
+    
+    return 0;
+}
+```
+🟥**Output:** 
+
+🟩 Case 1 : nums= { 1, 0, 1, 0, 1, 0, 0, 1 }
+
+```
+Sorted Array = { 0 , 0 , 0 , 0 , 1 , 1 , 1 }
+```
+🟩 Case 2 : nums= {}
+
+```
+Sorted Binary = {  }
+```
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+### SOLUTION 3: QUICKSORT PARITION: USING 'PIVOT' AND INSTANTLY 'SWAP' TO 'NEXT ZERO POSITION' TO FILL BOTH 0,1 AT THE SAME TIME
+🟧 **Libraries**
+```
+#include <iostream>
+```
+🟧 **Function: swap (The function that will be called in partition)**
+```
+void swap(int * arr, int i, int j) //ptr to first element which is easily accessed by [],
+//but if it was array of adresses (&arr) , then should've done *(&arr) to get address of first element
+//and then [] to access the element
+{
+    int temp=arr[i];
+    arr[i]=arr[j];
+    arr[j]=temp;
+}
+```
+🟧 **Function: partition (The function that will be called in main)**
+```
+int* partition (int arr [], int size)
+{
+    int pivot = 1;
+    int nextZeroPos=0;
+    
+    for (int i =0 ; i< size; i++)
+    {
+        if (arr[i]< pivot) //=0
+        {
+            swap(arr,i,nextZeroPos);
+            nextZeroPos++;
+            
+        }
+    }
+
+    return arr;//arr asln is a paramater as a pointer to only the 1st element in arr, it's of size 8 bytes, 
+    //so it returns as int*
+    //arr[0]= its value 
+}
+```
+🟧 **Function: print (The function that will be called in main)**
+```
+void print(int arr [], int size)
+{
+    std::cout<<"Sorted Binary = { ";
+    for (int i=0; i<size-1; i++)
+        std::cout<<arr[i]<<", ";
+    std::cout<<arr[size-1]<<" }"<<std::endl;
+}
+```
+🟧 **Function: main**
+```
+int main ()
+{
+    int nums[] = {1,0,1,0,1,0,1,1,0,1,0,0};
+    int n= sizeof(nums)/sizeof(nums[0]);
+    int * sortedArr=partition(nums,n);
+    print(sortedArr,n); 
+    return 0;
+}
+```
+🟥**Output:** 
+
+🟩 Case 1 : nums= { 1, 0, 1, 0, 1, 0, 0, 1 }
+
+```
+Sorted Array = { 0 , 0 , 0 , 0 , 1 , 1 , 1 }
+```
+🟩 Case 2 : nums= {}
+
+```
+Sorted Binary = {  }
+```
+
+**Note**: std::sort function in 'algorithm' library is of n log (n) time complexity so it doesn't work with this example
+
+**Advantage**: Better Method because it swaps the 0,1 at once
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Comparison on the 3 solution
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
