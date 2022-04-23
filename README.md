@@ -609,9 +609,103 @@ Sorted Binary = {  }
 **Advantage**: Better Method because it swaps the 0,1 at once
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
+### EXTRA (RELATED QUESTION): Rearrange even and odd numbers in an array in linear time such that all even numbers come before all odd numbers.
+
+💎**Idea:**
+
+We can't use the first two methods:
+
+1- We can't use the 1st method: bec the numbers are not same so we cnt depend on knowing the count of a number and filling the other(ex: 2,4,3,6,5) so we cant just count how many even no. then fill, and also we dont know the rest of odd numbers to fill after
+
+2- We can't use the 2nd method: bec (even if for every even number we meet on iterating, we place the even number in its next position at the beginning), this means we are overwriting the oddnnumbers, and also we will lose them and can't just fill them after the even numbers with a certain single number
+
+3- We can only use the third method: to swap at once any even number to be at the beginning and replace its position with the odd number
+
+## SOLUTION: QUICKSORT PARITION: USING 'PIVOT' AND INSTANTLY 'SWAP' TO 'NEXT ZERO POSITION' TO FILL BOTH 0,1 AT THE SAME TIME
+
+🟧 **Libraries**
+```
+#include <iostream>
+```
+🟧 **Function: swap (The function that will be called in partition)**
+```
+int* swap (int arr [], int i, int j)
+{
+    int temp=arr[i];
+    arr[i]=arr[j];
+    arr[j]= temp;
+    
+    return arr;
+}
+```
+🟧 **Function: partition (The function that will be called in main)**
+```
+int* partition(int arr [], int size)
+{
+    int nextEvenPos = 0;
+    for (int i =0; i<size; i++)
+    {
+        if (arr[i]%2==0)//even number
+        {
+            swap(arr,i,nextEvenPos);
+            nextEvenPos++;
+        }
+    }
+    
+    return arr;
+}
+```
+🟧 **Function: partition (The function that will be called in main)**
+```
+void print(int arr [], int size)
+{
+    std::cout<<"Sorted Even Before Odd = { ";
+    for (int i=0; i<size-1; i++)
+        std::cout<<arr[i]<<", ";
+    std::cout<<arr[size-1]<<" }"<<std::endl;
+}
+```
+🟧 **Function: main**
+```
+int main ()
+{
+    int nums[] = {5,6,1,3,8,2,10,20,30,33,40,54,55,71,89,80};
+    int n= sizeof(nums)/sizeof(nums[0]);
+    
+    int* sortedArr= partition(nums,n);
+    print(sortedArr,n);
+    
+    return 0;
+}
+```
+🟥**Output:** 
+
+🟩 Case 1 : nums= {5,6,1,3,8,2,10,20,30,33,40,54,55,71,89,80}
+
+```
+Sorted Even Before Odd = { 6, 8, 2, 10, 20, 30, 40, 54, 80, 33, 3, 5, 55, 71, 89, 1 }
+```
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Comparison on the 3 solution
 
+We have two categories (either each category is of the same number or a group of common things)
+
+ex:
+
+| | example|1st category| 2nd category|
+|--|--------|-----------|-------------|
+|same number/cateogry|{zeros, ones}| {0,0,0,0,0,0,0}|{1,1,1,1,1,1,1}|
+|group of diffenet values of common feature/category|{even,odd}|{2,6,40,102,44,12,8}|{3,51,67,891,33,1,27}|
+
+Solutions for the two cases:
+
+|same number/category(gp)|diff values (of same featutre) in the group|
+|------|----|
+|1- choose a no. as pivot, for loop to count the pivot occurences , for loop to fill it with the count, another for loop till the end of the array to fill it with the other number|    X |
+|2- for loop to instantly fill the pivot number (whenever i find it through the loop) in its next pos from beginning to overwrite the other number, for loop to fill the aarray till the end with the other number   | X |
+|3- QuickSort technique that uses partiton to two groups technique, choose pivot(numbers to be in the 1st group) and for loop to whenevr i find a pivot, swap it with its next pos from the begiining with the non pivot number (but not overwrite it) a |   SAME  |
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
