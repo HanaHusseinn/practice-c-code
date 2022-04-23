@@ -709,4 +709,248 @@ Solutions for the two cases:
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
+## 4️⃣ Sort binary array in linear time
 
+### SOLUTION 1: USING 'ARRAY INDECIS' AS A NEGATIVE MARK FOR SEEN VALUES - using ARRAYS
+
+🟧 **Libraries**
+```
+#include <iostream>
+```
+🟧 **Function: findDuplicate (The function that will be called in main)**
+```
+int findDuplicate(int nums [], int size)
+{
+    int duplicate = -1; //i'm sure this val will chang bec the array has a dup, and they are +ve nums
+    int seenVal = -1;
+    for (int i =0; i<size ; i++)
+    {
+        seenVal = abs(nums[i]); //will use it as an idex, and mark val in the index negative
+        if (nums[seenVal] > 0 )
+        {
+            nums[seenVal] = - nums[seenVal];
+        }
+        else //it has been negative which means it has been seen b4 and marked as neg
+        //and this is the 2nd time to see it, so it is the duplicate
+        {
+            duplicate = seenVal;
+            break; //since i know its onnly one duplicate so no need o check the rest of the array
+        }
+    }
+    
+    //restore the array to be all +v
+    for (int i =0;i<nums.size();i++)
+    {
+        if (nums[i]<0)
+            nums[i]= - nums[i];
+    }
+    
+    return duplicate;
+}
+```
+🟧 **Function: main
+```
+int main ()
+{
+    int nums[] = {1,2,3,4,2};
+    int n= sizeof(nums)/sizeof(nums[0]);
+    
+    int duplicate= findDuplicate(nums,n);
+    std::cout<<"The duplicate number is : "<< duplicate<< std::endl;
+    
+    return 0;
+}
+```
+🟥**Output:** 
+
+🟩 Case 1 : nums= {1,2,3,4,4}
+```
+The duplicate number is : 4
+```
+🟩 Case 2 : nums= {1,2,3,4,2}
+```
+The duplicate number is : 2
+```
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+### SAME SOLUTION USING VECTORS(DYNAMIC)
+
+🟧 **Libraries**
+```
+#include <iostream>
+#include <vector>
+```
+🟧 **Function: findDuplicate (The function that will be called in main)**
+```
+int findDuplicate(std::vector<int> &nums)
+{
+    int duplicate = -1; //i'm sure this val will chang bec the array has a dup, and they are +ve nums
+    int seenVal = -1;
+    
+    int size  = nums.size();
+    
+    for (int i =0; i<nums.size() ; i++) //vector(dynamic) passed as parameter, can know its size from address unlike array
+    {
+        seenVal = abs(nums[i]); //will use it as an idex, and mark val in the index negative
+        if (nums[seenVal] > 0 )
+        {
+            nums[seenVal] = - nums[seenVal];
+        }
+        else //it has been negative which means it has been seen b4 and marked as neg
+        //and this is the 2nd time to see it, so it is the duplicate
+        {
+            duplicate = seenVal;
+            break; //since i know its onnly one duplicate so no need o check the rest of the array
+        }
+    }
+    
+    //restore the array to be all +v
+    for (int i =0;i<nums.size();i++)
+    {
+        if (nums[i]<0)
+            nums[i]= - nums[i];
+    }
+    return duplicate;
+}
+```
+🟧 **Function: main
+```
+int main ()
+{
+    std::vector<int> nums = {1,2,3,4,2};
+    int duplicate= findDuplicate(nums);
+    std::cout<<"The duplicate number is : "<< duplicate<< std::endl;
+    
+    return 0;
+}
+```
+🟥**Output:** 
+
+🟩 Case 1 : nums= {1,2,3,4,4}
+```
+The duplicate number is : 4
+```
+🟩 Case 2 : nums= {1,2,3,4,2}
+```
+The duplicate number is : 2
+```
+**NOTE**: 
+1-time complexity id O(n) since for loop O(n) + another for loop O(n) = 2O(n) = O(n)
+
+2-no extra space needed, all changes in the same array, and then we restored it back
+
+3- vector is dynamic, it can increase and decrease size by adding & removing elements, and given its address, we can know its size normally unlike array
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+### SOLUTION 2: USING XOR (and vector)
+
+🟧 **Libraries**
+🟧 **Function: findDuplicate (The function that will be called in main)**
+🟧 **Function: main
+🟥**Output:** 
+🟩 Case 1 : nums= {1,2,3,4,4}
+🟩 Case 2 : nums= {1,2,3,4,2}
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 4️⃣ Sort binary array in linear time
+🟧 **Libraries**
+🟧 **Function: findDuplicate (The function that will be called in main)**
+🟧 **Function: main
+🟥**Output:** 
+🟩 Case 1 : nums= {1,2,3,4,4}
+🟩 Case 2 : nums= {1,2,3,4,2}
+
+
+
+
+
+```
+#include <iostream>
+#include <string>
+#include <bitset>
+#include <unordered_map>
+
+int solution(int N)
+{
+    //FIRST: convert to Binary (10 digits max)
+    //since largest number is 647, its binary rep is 10 digits, so any number rep it in 10 digits
+    //bitset converets int to string and get the output as string using to_string() func.
+    std::string binary = std::bitset<10>(N).to_string();
+    std::cout<<binary;
+    
+    //SECOND: find longest binary gap
+    std::unordered_map<std::string, int> myMap;
+    
+    int maxCount=0;
+    int count=0;
+    
+    for (int i =0; i<10;i++)
+    {
+        
+        if (binary[i]=='1')
+        {
+            //seen 1 before
+            std::unordered_map<std::string, int>::const_iterator foundOne = myMap.find ("1");
+            std::unordered_map<std::string, int>::const_iterator foundZero = myMap.find ("0");
+        
+            if (foundOne != myMap.end()) //1 is seen before
+            {
+                if (foundZero!=myMap.end() && ( (foundZero->second) > (foundOne->second) ) )
+                {
+                    count = i - (foundZero->second);
+                    maxCount = (count>maxCount )? count:maxCount; 
+                    myMap.erase("0");
+                    myMap.erase("1");
+                }
+                else
+                {
+                    myMap.erase("0"); //yenfa3 erasse key 7atta lw msh mwgood( mafish 0) ?
+                    //myMap.insert({"1",i});
+                }   
+            //in both cases either update the value to be beginning 1, or remove the previous values after
+            //knowing the binary gap and start from a new 1
+
+            }//either 1 is not seen before, or this is zero 
+            //else
+            //{
+            //    myMap.insert({"1",i});
+
+            //}
+            myMap.insert({"1",i});
+        
+        }
+        else  //1 is not seen before
+        {
+            std::unordered_map<std::string, int>:: const_iterator foundOne = myMap.find("1");
+
+            if (myMap.find ("0")==myMap.end() && foundOne!=myMap.end())
+            {
+                myMap.insert({"0",i});
+            }
+            
+            
+        }
+        
+    }
+  
+    
+    return maxCount;
+}
+
+
+int main()
+{
+    int n = 647; //the number to find its binary representation, then find its longest binary gap
+    //NOTE: the binary gap should be between two 1's. ex: 100001, but 10000 is not a binary gap
+    int longestSeq = solution(n);
+    
+    std::cout<<"The longest sequence of binary gap is : "<<longestSeq<<std::endl;
+
+
+    return 0;
+}
+```
