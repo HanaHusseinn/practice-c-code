@@ -954,3 +954,124 @@ int main()
     return 0;
 }
 ```
+
+
+
+
+
+
+```
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include <string>
+#include <bitset>
+#include <unordered_map>
+#include <math.h> 
+
+int solution(int N)
+{
+    //FIRST: convert to Binary (10 digits max)
+    //since largest number is 647, its binary rep is 10 digits, so any number rep it in 10 digits
+    //bitset converets int to string and get the output as string using to_string() func.
+    
+    
+    
+    //std::string binary = std::bitset<30>(N).to_string();
+    //std::cout<<binary;
+    std::string binary;
+    while(N)
+    {
+        if(N & 1) // 1
+            binary+='1';
+        else // 0
+            binary+='0';
+        N>>=1; // Right Shift by 1 
+    }   
+      
+    for(int i=binary.size()-1 ; i>=0 ; i--)
+        std::cout<< binary[i];
+   std::cout<<std::endl;
+   
+    
+    
+    
+    //SECOND: find longest binary gap
+    std::unordered_map<std::string, int> myMap;
+    
+    int maxCount=0;
+    int count=0;
+    
+    for (int i =0; i<30;i++)
+    {
+        
+        if (binary[i]=='1')
+        {
+            //seen 1 before
+            std::unordered_map<std::string, int>::const_iterator foundOne = myMap.find ("1");
+            std::unordered_map<std::string, int>::const_iterator foundZero = myMap.find ("0");
+        
+            if (foundOne != myMap.end()) //1 is seen before
+            {
+                if (foundZero!=myMap.end() && ( (foundZero->second) > (foundOne->second) ) )
+                {
+                    count = i - (foundZero->second);
+                    maxCount = (count>maxCount )? count:maxCount; 
+                    myMap.erase("0");
+                    myMap.erase("1");
+                }
+                else
+                {
+                    myMap.erase("0"); //yenfa3 erasse key 7atta lw msh mwgood( mafish 0) ?
+                    //myMap.insert({"1",i});
+                }   
+            //in both cases either update the value to be beginning 1, or remove the previous values after
+            //knowing the binary gap and start from a new 1
+
+            }//either 1 is not seen before, or this is zero 
+            //else
+            //{
+            //    myMap.insert({"1",i});
+
+            //}
+            myMap.insert({"1",i});
+        
+        }
+        else  //1 is not seen before
+        {
+            std::unordered_map<std::string, int>:: const_iterator foundOne = myMap.find("1");
+
+            if (myMap.find ("0")==myMap.end() && foundOne!=myMap.end())
+            {
+                myMap.insert({"0",i});
+            }
+            
+            
+        }
+        
+    }
+  
+    
+    return maxCount;
+}
+
+
+int main()
+{
+    int n = 1041; //the number to find its binary representation, then find its longest binary gap
+    //NOTE: the binary gap should be between two 1's. ex: 100001, but 10000 is not a binary gap
+    int longestSeq = solution(n);
+    
+    std::cout<<"The longest sequence of binary gap is : "<<longestSeq<<std::endl;
+
+
+    return 0;
+}
+
+```
