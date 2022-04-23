@@ -400,7 +400,7 @@ and hust checking the repeated sum to indicate range in between is zero, and sta
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Sort binary array in linear time
+## 3️⃣ Sort binary array in linear time
 
 ### SOLUTION 1: USING COUNT (not O(n)) - My solution
 
@@ -621,7 +621,7 @@ We can't use the first two methods:
 
 3- We can only use the third method: to swap at once any even number to be at the beginning and replace its position with the odd number
 
-## SOLUTION: QUICKSORT PARITION: USING 'PIVOT' AND INSTANTLY 'SWAP' TO 'NEXT ZERO POSITION' TO FILL BOTH 0,1 AT THE SAME TIME
+**SOLUTION** : QUICKSORT PARITION: USING 'PIVOT' AND INSTANTLY 'SWAP' TO 'NEXT ZERO POSITION' TO FILL BOTH 0,1 AT THE SAME TIME
 
 🟧 **Libraries**
 ```
