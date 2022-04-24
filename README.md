@@ -873,107 +873,7 @@ The duplicate number is : 2
 #include <string>
 #include <bitset>
 #include <unordered_map>
-
-int solution(int N)
-{
-    //FIRST: convert to Binary (10 digits max)
-    //since largest number is 647, its binary rep is 10 digits, so any number rep it in 10 digits
-    //bitset converets int to string and get the output as string using to_string() func.
-    std::string binary = std::bitset<10>(N).to_string();
-    std::cout<<binary;
-    
-    //SECOND: find longest binary gap
-    std::unordered_map<std::string, int> myMap;
-    
-    int maxCount=0;
-    int count=0;
-    
-    for (int i =0; i<10;i++)
-    {
-        
-        if (binary[i]=='1')
-        {
-            //seen 1 before
-            std::unordered_map<std::string, int>::const_iterator foundOne = myMap.find ("1");
-            std::unordered_map<std::string, int>::const_iterator foundZero = myMap.find ("0");
-        
-            if (foundOne != myMap.end()) //1 is seen before
-            {
-                if (foundZero!=myMap.end() && ( (foundZero->second) > (foundOne->second) ) )
-                {
-                    count = i - (foundZero->second);
-                    maxCount = (count>maxCount )? count:maxCount; 
-                    myMap.erase("0");
-                    myMap.erase("1");
-                }
-                else
-                {
-                    myMap.erase("0"); //yenfa3 erasse key 7atta lw msh mwgood( mafish 0) ?
-                    //myMap.insert({"1",i});
-                }   
-            //in both cases either update the value to be beginning 1, or remove the previous values after
-            //knowing the binary gap and start from a new 1
-
-            }//either 1 is not seen before, or this is zero 
-            //else
-            //{
-            //    myMap.insert({"1",i});
-
-            //}
-            myMap.insert({"1",i});
-        
-        }
-        else  //1 is not seen before
-        {
-            std::unordered_map<std::string, int>:: const_iterator foundOne = myMap.find("1");
-
-            if (myMap.find ("0")==myMap.end() && foundOne!=myMap.end())
-            {
-                myMap.insert({"0",i});
-            }
-            
-            
-        }
-        
-    }
-  
-    
-    return maxCount;
-}
-
-
-int main()
-{
-    int n = 647; //the number to find its binary representation, then find its longest binary gap
-    //NOTE: the binary gap should be between two 1's. ex: 100001, but 10000 is not a binary gap
-    int longestSeq = solution(n);
-    
-    std::cout<<"The longest sequence of binary gap is : "<<longestSeq<<std::endl;
-
-
-    return 0;
-}
-```
-
-
-
-
-
-
-```
-/******************************************************************************
-
-                              Online C++ Compiler.
-               Code, Compile, Run and Debug C++ program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
-#include <iostream>
-#include <string>
-#include <bitset>
-#include <unordered_map>
-#include <math.h> 
+//#include <math.h> 
 
 int solution(int N)
 {
@@ -982,9 +882,11 @@ int solution(int N)
     //bitset converets int to string and get the output as string using to_string() func.
     
     
-    
-    //std::string binary = std::bitset<30>(N).to_string();
+    //1- Using bitset for certai length
+    //std::string binary = std::bitset<35>(N).to_string();
     //std::cout<<binary;
+    
+    //2- Using shifting , output is string (for concatenating and shifting)
     std::string binary;
     while(N)
     {
@@ -997,7 +899,7 @@ int solution(int N)
       
     for(int i=binary.size()-1 ; i>=0 ; i--)
         std::cout<< binary[i];
-   std::cout<<std::endl;
+    std::cout<<std::endl;
    
     
     
@@ -1008,13 +910,13 @@ int solution(int N)
     int maxCount=0;
     int count=0;
     
-    for (int i =0; i<30;i++)
+    for (int i =0; i<binary.size();i++) //if using bitset, iterate on bits length (which is 35)
     {
         
-        if (binary[i]=='1')
+        if (binary[i]=='1')//in string, there are fiunctions like size, find (substring),...
         {
             //seen 1 before
-            std::unordered_map<std::string, int>::const_iterator foundOne = myMap.find ("1");
+            std::unordered_map<std::string, int>::const_iterator foundOne = myMap.find ("1"); //map functions(ex: find,erase,insert,...) deal with strings not char (so must be "" not '' even if one chracter)
             std::unordered_map<std::string, int>::const_iterator foundZero = myMap.find ("0");
         
             if (foundOne != myMap.end()) //1 is seen before
@@ -1074,4 +976,55 @@ int main()
     return 0;
 }
 
+```
+
+Without Hash
+```
+#include<iostream>
+#include <cmath>
+#include<string>
+
+int solution(int N) 
+{
+
+    int numBits = floor(std::log2(N))+1;
+    int maximumGap =0, possibleGap=0;
+    std::string binary;
+    bool foundOne = false;
+    
+    //1041 -> 10000010001
+    
+    for (int i=0; i<numBits; i++) 
+    {
+        if (foundOne ) //found previous one 
+        {
+            if (N&1)//and remainder is 1, consider it have a 0 gap in between
+            {
+                maximumGap= (possibleGap>maximumGap)? possibleGap:maximumGap;
+                possibleGap=0;
+                
+            }
+            else if (!(N&1)) //and remainder is 0, consider it have a 0 gap in between
+            {
+                possibleGap++;
+            }
+        }
+        else //no previous one
+        {
+            if (N&1) //and remainder is 1
+            {
+                //reset the one to start from here
+                foundOne=true;
+                //possibleGap=0;
+            }
+            //else: it is a 0 with no previous one, so dont do any thing
+            
+        }
+        
+            
+        N>>=1;
+    }
+    
+    return maximumGap;
+}
 ```
